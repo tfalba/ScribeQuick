@@ -16,6 +16,31 @@ practical AI integration in a realistic clinical-documentation workflow.
 
 ---
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/recent-notes.jpg" width="200" alt="Recent notes list" /><br/>
+      <sub><b>Recent notes</b><br/>searchable history</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/soap-note-dark.jpg" width="200" alt="Generated SOAP note in dark mode" /><br/>
+      <sub><b>SOAP note</b><br/>dark mode</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/edit-codes.jpg" width="200" alt="Editing ICD-10 codes before saving" /><br/>
+      <sub><b>Edit before save</b><br/>ICD-10 codes</sub>
+    </td>
+    <td align="center" width="25%">
+      <img src="docs/screenshots/fhir-export.jpg" width="200" alt="Simulated FHIR R4 export" /><br/>
+      <sub><b>FHIR export</b><br/>simulated R4 bundle</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
 ## Features
 
 - **Type or dictate** visit notes — voice input is recorded with `expo-audio` and
