@@ -1,21 +1,44 @@
 /**
  * SoapSection — renders one labeled section of a SOAP note (e.g. "Subjective").
- * Small and single-purpose; reused for all four sections on the results screen.
+ * Read-only by default; pass `editable` + `onChangeText` to turn the content into
+ * a multiline text field for edit-before-save. Reused for all four sections.
  */
 
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { colors, fontSize, fontWeight, radius, spacing } from '../constants/theme';
 
 interface SoapSectionProps {
   label: string;
   content: string;
+  editable?: boolean;
+  onChangeText?: (text: string) => void;
 }
 
-export default function SoapSection({ label, content }: SoapSectionProps) {
+export default function SoapSection({
+  label,
+  content,
+  editable = false,
+  onChangeText,
+}: SoapSectionProps) {
   return (
-    <View style={styles.container} accessible accessibilityLabel={`${label} section`}>
+    <View
+      style={[styles.container, editable && styles.containerEditing]}
+      accessible={!editable}
+      accessibilityLabel={`${label} section`}
+    >
       <Text style={styles.label}>{label}</Text>
-      <Text style={styles.content}>{content?.trim() ? content : '—'}</Text>
+      {editable ? (
+        <TextInput
+          style={styles.input}
+          value={content}
+          onChangeText={onChangeText}
+          multiline
+          textAlignVertical="top"
+          accessibilityLabel={`Edit ${label}`}
+        />
+      ) : (
+        <Text style={styles.content}>{content?.trim() ? content : '—'}</Text>
+      )}
     </View>
   );
 }
@@ -29,6 +52,9 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     marginBottom: spacing.md,
   },
+  containerEditing: {
+    borderColor: colors.primary,
+  },
   label: {
     fontSize: fontSize.xs,
     fontWeight: fontWeight.bold,
@@ -41,5 +67,12 @@ const styles = StyleSheet.create({
     fontSize: fontSize.md,
     lineHeight: 24,
     color: colors.text,
+  },
+  input: {
+    fontSize: fontSize.md,
+    lineHeight: 22,
+    color: colors.text,
+    minHeight: 72,
+    padding: 0,
   },
 });

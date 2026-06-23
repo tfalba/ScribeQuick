@@ -28,6 +28,9 @@ practical AI integration in a realistic clinical-documentation workflow.
   - a per-code **coding rationale** the nurse can spot-check;
   - a deterministic cleanup pass that removes contradictory codes (e.g. drops the
     diabetes "without complications" code when a complication code is present).
+- **Edit before saving** — review and correct the patient label, any SOAP
+  section, or the ICD-10 codes before saving. Saved notes can be re-opened,
+  edited, and updated in place.
 - **Copy full note** to the clipboard as formatted plain text (with the billing
   disclaimer included).
 - **Local history** — notes are saved on-device with AsyncStorage, searchable by

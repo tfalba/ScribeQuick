@@ -66,6 +66,31 @@ export async function saveNote(
   }
 }
 
+/**
+ * Update an existing note in place (e.g. after editing before/after saving).
+ * Preserves the original id and createdAt. @throws Error if the note is missing
+ * or persistence fails.
+ */
+export async function updateNote(
+  id: string,
+  updates: Partial<Omit<SavedNote, 'id' | 'createdAt'>>
+): Promise<SavedNote> {
+  try {
+    const existing = await getNotes();
+    const index = existing.findIndex((n) => n.id === id);
+    if (index === -1) {
+      throw new Error('Note not found.');
+    }
+    const updated: SavedNote = { ...existing[index], ...updates, id, createdAt: existing[index].createdAt };
+    existing[index] = updated;
+    await AsyncStorage.setItem(NOTES_KEY, JSON.stringify(existing));
+    return updated;
+  } catch (err) {
+    console.warn('Failed to update note:', err);
+    throw new Error('Could not save your changes. Please try again.');
+  }
+}
+
 /** Delete a single note by id. @throws Error on failure. */
 export async function deleteNote(id: string): Promise<void> {
   try {
