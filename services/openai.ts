@@ -190,7 +190,7 @@ function normalizeRationale(value: unknown): string | undefined {
  *
  * Families covered: E08, E09, E10, E11, E13 (the ICD-10-CM diabetes chapters).
  */
-function sanitizeIcd10Codes(codes: Icd10Code[]): Icd10Code[] {
+export function sanitizeIcd10Codes(codes: Icd10Code[]): Icd10Code[] {
   const DM_FAMILY = /^(E(?:08|09|10|11|13))/i;
 
   // Families that have at least one complication code (anything but ".9").
@@ -258,6 +258,34 @@ function validateSoapNote(parsed: unknown): SoapNote {
 }
 
 /**
+ * Parse the raw model response text into a validated, sanitized SoapNote.
+ * Tolerates ```json code fences. @throws SoapParseError on empty/invalid/
+ * malformed responses (carrying the raw text for the UI fallback).
+ */
+export function parseSoapResponse(content: string): SoapNote {
+  if (!content || typeof content !== 'string') {
+    throw new SoapParseError('OpenAI returned an empty response.', content ?? '');
+  }
+
+  const cleaned = stripCodeFences(content);
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(cleaned);
+  } catch {
+    throw new SoapParseError('Could not parse the AI response as JSON.', content);
+  }
+
+  try {
+    return validateSoapNote(parsed);
+  } catch (err) {
+    throw new SoapParseError(
+      err instanceof Error ? err.message : 'Response did not match the SOAP format.',
+      content
+    );
+  }
+}
+
+/**
  * Generate a structured SOAP note from rough visit notes.
  * @throws Error on network/API failure, SoapParseError on bad JSON.
  */
@@ -306,27 +334,5 @@ export async function generateSoapNote(rawNotes: string): Promise<SoapNote> {
     throw new Error('Failed to reach OpenAI. Please try again.');
   }
 
-  if (!content || typeof content !== 'string') {
-    throw new SoapParseError('OpenAI returned an empty response.', '');
-  }
-
-  const cleaned = stripCodeFences(content);
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(cleaned);
-  } catch {
-    throw new SoapParseError(
-      'Could not parse the AI response as JSON.',
-      content
-    );
-  }
-
-  try {
-    return validateSoapNote(parsed);
-  } catch (err) {
-    throw new SoapParseError(
-      err instanceof Error ? err.message : 'Response did not match the SOAP format.',
-      content
-    );
-  }
+  return parseSoapResponse(content);
 }

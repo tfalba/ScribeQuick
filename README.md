@@ -124,6 +124,21 @@ All API access is isolated in [`services/openai.ts`](services/openai.ts):
 3. **Post-processing** — `sanitizeIcd10Codes()` deterministically removes
    duplicate and contradictory codes before the result reaches the UI.
 
+## Testing
+
+Unit tests cover the pure, high-risk logic with Jest (`jest-expo` preset):
+
+```bash
+npm test            # run once
+npm run test:watch  # watch mode
+```
+
+The suite (`__tests__/`) exercises the SOAP response parser (valid JSON, code
+fences, malformed/empty input, rationale normalization), the ICD-10 cleanup
+rules (`sanitizeIcd10Codes`), and the FHIR bundle builder (resource shape, LOINC
+section codes, ICD-10-CM coding, XML escaping). Network calls and UI are out of
+scope.
+
 ## Design decisions & known limitations
 
 - **No backend.** API calls go directly from the app to OpenAI. This keeps the
