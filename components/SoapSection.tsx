@@ -4,8 +4,16 @@
  * a multiline text field for edit-before-save. Reused for all four sections.
  */
 
+import { useMemo } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { colors, fontSize, fontWeight, radius, spacing } from '../constants/theme';
+import {
+  fontSize,
+  fontWeight,
+  radius,
+  spacing,
+  useThemeColors,
+  type ThemeColors,
+} from '../constants/theme';
 
 interface SoapSectionProps {
   label: string;
@@ -20,13 +28,18 @@ export default function SoapSection({
   editable = false,
   onChangeText,
 }: SoapSectionProps) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
   return (
     <View
       style={[styles.container, editable && styles.containerEditing]}
       accessible={!editable}
       accessibilityLabel={`${label} section`}
     >
-      <Text style={styles.label}>{label}</Text>
+      <Text style={styles.label} accessibilityRole="header">
+        {label}
+      </Text>
       {editable ? (
         <TextInput
           style={styles.input}
@@ -34,6 +47,7 @@ export default function SoapSection({
           onChangeText={onChangeText}
           multiline
           textAlignVertical="top"
+          placeholderTextColor={colors.textMuted}
           accessibilityLabel={`Edit ${label}`}
         />
       ) : (
@@ -43,36 +57,37 @@ export default function SoapSection({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: spacing.lg,
-    marginBottom: spacing.md,
-  },
-  containerEditing: {
-    borderColor: colors.primary,
-  },
-  label: {
-    fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
-    color: colors.primary,
-    marginBottom: spacing.sm,
-  },
-  content: {
-    fontSize: fontSize.md,
-    lineHeight: 24,
-    color: colors.text,
-  },
-  input: {
-    fontSize: fontSize.md,
-    lineHeight: 22,
-    color: colors.text,
-    minHeight: 72,
-    padding: 0,
-  },
-});
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: radius.md,
+      padding: spacing.lg,
+      marginBottom: spacing.md,
+    },
+    containerEditing: {
+      borderColor: colors.primary,
+    },
+    label: {
+      fontSize: fontSize.xs,
+      fontWeight: fontWeight.bold,
+      letterSpacing: 0.8,
+      textTransform: 'uppercase',
+      color: colors.primaryText,
+      marginBottom: spacing.sm,
+    },
+    content: {
+      fontSize: fontSize.md,
+      lineHeight: 24,
+      color: colors.text,
+    },
+    input: {
+      fontSize: fontSize.md,
+      lineHeight: 22,
+      color: colors.text,
+      minHeight: 72,
+      padding: 0,
+    },
+  });

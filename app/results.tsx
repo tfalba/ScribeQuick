@@ -29,7 +29,14 @@ import SoapSection from '../components/SoapSection';
 import type { SoapNote } from '../services/openai';
 import { buildFhirBundle, serializeFhirBundle } from '../services/fhir';
 import { getNoteById, saveNote, updateNote } from '../services/storage';
-import { colors, fontSize, fontWeight, radius, spacing } from '../constants/theme';
+import {
+  fontSize,
+  fontWeight,
+  radius,
+  spacing,
+  useThemeColors,
+  type ThemeColors,
+} from '../constants/theme';
 
 type EditableField = 'subjective' | 'objective' | 'assessment' | 'plan';
 
@@ -73,6 +80,8 @@ export default function ResultsScreen() {
     id?: string;
   }>();
   const insets = useSafeAreaInsets();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const [soap, setSoap] = useState<SoapNote | null>(null);
   const [rawNotes, setRawNotes] = useState('');
@@ -509,7 +518,7 @@ export default function ResultsScreen() {
                 accessibilityLabel="Save note to this device"
               >
                 {saving ? (
-                  <ActivityIndicator color={colors.primary} />
+                  <ActivityIndicator color={colors.primaryText} />
                 ) : (
                   <Text style={styles.secondaryButtonText}>Save Note</Text>
                 )}
@@ -522,7 +531,8 @@ export default function ResultsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   flex: {
     flex: 1,
   },
@@ -566,7 +576,7 @@ const styles = StyleSheet.create({
   editLink: {
     fontSize: fontSize.md,
     fontWeight: fontWeight.semibold,
-    color: colors.primary,
+    color: colors.primaryText,
     paddingHorizontal: spacing.sm,
   },
   savedBadge: {
@@ -663,7 +673,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   addCodeText: {
-    color: colors.primary,
+    color: colors.primaryText,
     fontSize: fontSize.sm,
     fontWeight: fontWeight.semibold,
   },
@@ -708,7 +718,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   secondaryButtonText: {
-    color: colors.primary,
+    color: colors.primaryText,
     fontSize: fontSize.md,
     fontWeight: fontWeight.semibold,
   },

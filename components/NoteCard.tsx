@@ -1,12 +1,20 @@
 /**
  * NoteCard — a tappable card summarizing a saved note in the history list.
  * Shows the patient label, formatted date, and a preview of the Assessment.
+ * Deleting requires an inline two-step confirmation (no alert dialogs).
  */
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { SavedNote } from '../services/storage';
-import { colors, fontSize, fontWeight, radius, spacing } from '../constants/theme';
+import {
+  fontSize,
+  fontWeight,
+  radius,
+  spacing,
+  useThemeColors,
+  type ThemeColors,
+} from '../constants/theme';
 
 interface NoteCardProps {
   note: SavedNote;
@@ -29,6 +37,8 @@ function formatDate(epochMs: number): string {
 }
 
 export default function NoteCard({ note, onPress, onDelete }: NoteCardProps) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const preview = note.soap.assessment?.trim() || 'No assessment recorded.';
   const [confirming, setConfirming] = useState(false);
 
@@ -82,74 +92,75 @@ export default function NoteCard({ note, onPress, onDelete }: NoteCardProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radius.md,
-    padding: spacing.lg,
-    marginBottom: spacing.md,
-  },
-  cardPressed: {
-    backgroundColor: colors.surfaceAlt,
-    borderColor: colors.borderStrong,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  patient: {
-    flex: 1,
-    fontSize: fontSize.lg,
-    fontWeight: fontWeight.semibold,
-    color: colors.text,
-  },
-  delete: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
-    color: colors.error,
-    marginLeft: spacing.md,
-  },
-  confirmRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: spacing.md,
-  },
-  cancel: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.medium,
-    color: colors.textSecondary,
-    paddingHorizontal: spacing.sm,
-  },
-  confirmDelete: {
-    fontSize: fontSize.sm,
-    fontWeight: fontWeight.bold,
-    color: colors.textInverse,
-    backgroundColor: colors.error,
-    overflow: 'hidden',
-    borderRadius: radius.sm,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-  },
-  date: {
-    fontSize: fontSize.sm,
-    color: colors.textMuted,
-    marginTop: spacing.xs,
-    marginBottom: spacing.md,
-  },
-  previewLabel: {
-    fontSize: fontSize.xs,
-    fontWeight: fontWeight.bold,
-    letterSpacing: 0.6,
-    textTransform: 'uppercase',
-    color: colors.primary,
-    marginBottom: spacing.xs,
-  },
-  preview: {
-    fontSize: fontSize.md,
-    lineHeight: 22,
-    color: colors.textSecondary,
-  },
-});
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    card: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: radius.md,
+      padding: spacing.lg,
+      marginBottom: spacing.md,
+    },
+    cardPressed: {
+      backgroundColor: colors.surfaceAlt,
+      borderColor: colors.borderStrong,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    patient: {
+      flex: 1,
+      fontSize: fontSize.lg,
+      fontWeight: fontWeight.semibold,
+      color: colors.text,
+    },
+    delete: {
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.medium,
+      color: colors.error,
+      marginLeft: spacing.md,
+    },
+    confirmRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginLeft: spacing.md,
+    },
+    cancel: {
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.medium,
+      color: colors.textSecondary,
+      paddingHorizontal: spacing.sm,
+    },
+    confirmDelete: {
+      fontSize: fontSize.sm,
+      fontWeight: fontWeight.bold,
+      color: colors.onError,
+      backgroundColor: colors.error,
+      overflow: 'hidden',
+      borderRadius: radius.sm,
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs,
+    },
+    date: {
+      fontSize: fontSize.sm,
+      color: colors.textMuted,
+      marginTop: spacing.xs,
+      marginBottom: spacing.md,
+    },
+    previewLabel: {
+      fontSize: fontSize.xs,
+      fontWeight: fontWeight.bold,
+      letterSpacing: 0.6,
+      textTransform: 'uppercase',
+      color: colors.primaryText,
+      marginBottom: spacing.xs,
+    },
+    preview: {
+      fontSize: fontSize.md,
+      lineHeight: 22,
+      color: colors.textSecondary,
+    },
+  });

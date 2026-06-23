@@ -39,6 +39,9 @@ practical AI integration in a realistic clinical-documentation workflow.
 - **Local history** — notes are saved on-device with AsyncStorage, searchable by
   patient label or assessment, with inline delete confirmation.
 - **Branded UI** — a code-rendered logo wired into the app icon and splash screen.
+- **Light & dark mode** — follows the OS appearance via a theme-aware palette;
+  colors meet WCAG AA contrast in both modes, and interactive elements carry
+  screen-reader labels and roles.
 
 ## Tech stack
 
@@ -139,7 +142,7 @@ All API access is isolated in [`services/openai.ts`](services/openai.ts):
 
 - [x] Voice input (Whisper transcription)
 - [x] EHR export simulation (mock FHIR R4 bundle)
-- [ ] Dark mode + accessibility pass (WCAG AA, screen-reader labels)
+- [x] Dark mode + accessibility pass (WCAG AA contrast, screen-reader labels)
 
 ## License
 

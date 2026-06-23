@@ -7,7 +7,7 @@
  * failure (network/API or unparseable JSON, with the raw response on parse fail).
  */
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -33,7 +33,14 @@ import {
   SoapParseError,
   transcribeAudio,
 } from '../services/openai';
-import { colors, fontSize, fontWeight, radius, spacing } from '../constants/theme';
+import {
+  fontSize,
+  fontWeight,
+  radius,
+  spacing,
+  useThemeColors,
+  type ThemeColors,
+} from '../constants/theme';
 
 /** Format milliseconds as m:ss for the recording timer. */
 function formatDuration(ms: number): string {
@@ -45,6 +52,8 @@ function formatDuration(ms: number): string {
 
 export default function NewNoteScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [patientLabel, setPatientLabel] = useState('');
   const [rawNotes, setRawNotes] = useState('');
   const [loading, setLoading] = useState(false);
@@ -200,7 +209,7 @@ export default function NewNoteScreen() {
           >
             {transcribing ? (
               <>
-                <ActivityIndicator size="small" color={colors.primary} />
+                <ActivityIndicator size="small" color={colors.primaryText} />
                 <Text style={styles.micButtonText}>Transcribing…</Text>
               </>
             ) : isRecording ? (
@@ -277,7 +286,8 @@ export default function NewNoteScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   flex: {
     flex: 1,
   },
@@ -323,7 +333,7 @@ const styles = StyleSheet.create({
   micButtonText: {
     fontSize: fontSize.sm,
     fontWeight: fontWeight.semibold,
-    color: colors.primary,
+    color: colors.primaryText,
     marginLeft: spacing.xs,
   },
   micButtonTextRecording: {
@@ -333,7 +343,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 13,
     borderRadius: 4,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.primaryText,
   },
   recDot: {
     width: 10,
@@ -394,7 +404,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   retryButtonText: {
-    color: colors.textInverse,
+    color: colors.onError,
     fontSize: fontSize.sm,
     fontWeight: fontWeight.semibold,
   },

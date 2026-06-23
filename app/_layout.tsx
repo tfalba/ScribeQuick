@@ -1,17 +1,22 @@
 /**
  * Root layout — defines the Expo Router stack and shared header styling.
- * Three screens: history (index), new note input, and the generated results.
+ * Screens: welcome (index), recent notes, new note, results, FHIR export.
+ * Colors and status-bar style follow the OS light/dark appearance.
  */
 
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { colors, fontWeight } from '../constants/theme';
+import { fontWeight, useThemeColors } from '../constants/theme';
 
 export default function RootLayout() {
+  const colors = useThemeColors();
+  const scheme = useColorScheme();
+
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" />
+      <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
           headerStyle: { backgroundColor: colors.primary },

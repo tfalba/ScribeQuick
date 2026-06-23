@@ -6,18 +6,27 @@
  * refreshed whenever this screen regains focus.
  */
 
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Logo from '../components/Logo';
 import { getNotes } from '../services/storage';
-import { colors, fontSize, fontWeight, radius, spacing } from '../constants/theme';
+import {
+  fontSize,
+  fontWeight,
+  radius,
+  spacing,
+  useThemeColors,
+  type ThemeColors,
+} from '../constants/theme';
 
 const TAGLINE = 'Rough notes in. Structured SOAP out.';
 
 export default function WelcomeScreen() {
   const insets = useSafeAreaInsets();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [noteCount, setNoteCount] = useState<number | null>(null);
 
   useFocusEffect(
@@ -44,7 +53,10 @@ export default function WelcomeScreen() {
       style={styles.screen}
       contentContainerStyle={[
         styles.content,
-        { paddingTop: insets.top + spacing.xxl, paddingBottom: insets.bottom + spacing.xl },
+        {
+          paddingTop: insets.top + spacing.xxl,
+          paddingBottom: insets.bottom + spacing.xl,
+        },
       ]}
     >
       <View style={styles.hero}>
@@ -111,122 +123,124 @@ export default function WelcomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  content: {
-    flexGrow: 1,
-    paddingHorizontal: spacing.xl,
-  },
-  hero: {
-    alignItems: 'center',
-    marginBottom: spacing.xxl,
-  },
-  actions: {
-    gap: spacing.lg,
-  },
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-  },
-  cardPrimary: {
-    backgroundColor: colors.primary,
-  },
-  cardSecondary: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  cardPressed: {
-    opacity: 0.9,
-  },
-  cardBody: {
-    flex: 1,
-    marginLeft: spacing.lg,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  voiceBadge: {
-    backgroundColor: colors.accent,
-    borderRadius: radius.sm,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 2,
-    marginLeft: spacing.sm,
-  },
-  voiceBadgeText: {
-    color: colors.textInverse,
-    fontSize: 10,
-    fontWeight: fontWeight.bold,
-    letterSpacing: 1,
-  },
-  cardTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: fontWeight.semibold,
-    color: colors.text,
-  },
-  cardTitleOnPrimary: {
-    color: colors.textInverse,
-  },
-  cardSubtitle: {
-    fontSize: fontSize.sm,
-    color: colors.textSecondary,
-    marginTop: spacing.xs,
-    lineHeight: 18,
-  },
-  cardSubtitleOnPrimary: {
-    color: colors.primaryLight,
-  },
-  iconBadge: {
-    width: 48,
-    height: 48,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconBadgePrimary: {
-    backgroundColor: colors.primaryDark,
-  },
-  iconBadgeText: {
-    color: colors.textInverse,
-    fontSize: 30,
-    fontWeight: fontWeight.bold,
-    lineHeight: 34,
-  },
-  iconBadgeSecondary: {
-    backgroundColor: colors.primaryLight,
-    paddingHorizontal: 12,
-  },
-  listGlyphLine: {
-    height: 3,
-    alignSelf: 'stretch',
-    backgroundColor: colors.primary,
-    borderRadius: 2,
-    marginVertical: 2,
-  },
-  listGlyphLineShort: {
-    width: '60%',
-    alignSelf: 'flex-start',
-  },
-  chevron: {
-    fontSize: fontSize.xxl,
-    fontWeight: fontWeight.medium,
-    color: colors.textMuted,
-    marginLeft: spacing.sm,
-  },
-  chevronOnPrimary: {
-    color: colors.primaryLight,
-  },
-  footerNote: {
-    marginTop: 'auto',
-    paddingTop: spacing.xxl,
-    textAlign: 'center',
-    fontSize: fontSize.xs,
-    color: colors.textMuted,
-  },
-});
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    content: {
+      flexGrow: 1,
+      paddingHorizontal: spacing.xl,
+    },
+    hero: {
+      alignItems: 'center',
+      marginBottom: spacing.xxl,
+    },
+    actions: {
+      gap: spacing.lg,
+    },
+    card: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderRadius: radius.lg,
+      padding: spacing.lg,
+    },
+    cardPrimary: {
+      backgroundColor: colors.primary,
+    },
+    cardSecondary: {
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    cardPressed: {
+      opacity: 0.9,
+    },
+    cardBody: {
+      flex: 1,
+      marginLeft: spacing.lg,
+    },
+    titleRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    voiceBadge: {
+      backgroundColor: colors.accent,
+      borderRadius: radius.sm,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 2,
+      marginLeft: spacing.sm,
+    },
+    voiceBadgeText: {
+      color: colors.onAccent,
+      fontSize: 10,
+      fontWeight: fontWeight.bold,
+      letterSpacing: 1,
+    },
+    cardTitle: {
+      fontSize: fontSize.lg,
+      fontWeight: fontWeight.semibold,
+      color: colors.text,
+    },
+    cardTitleOnPrimary: {
+      color: colors.textInverse,
+    },
+    cardSubtitle: {
+      fontSize: fontSize.sm,
+      color: colors.textSecondary,
+      marginTop: spacing.xs,
+      lineHeight: 18,
+    },
+    cardSubtitleOnPrimary: {
+      color: colors.onPrimaryMuted,
+    },
+    iconBadge: {
+      width: 48,
+      height: 48,
+      borderRadius: radius.md,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    iconBadgePrimary: {
+      // Theme-agnostic darkened overlay so the white "+" reads on the blue card.
+      backgroundColor: 'rgba(0,0,0,0.18)',
+    },
+    iconBadgeText: {
+      color: colors.textInverse,
+      fontSize: 30,
+      fontWeight: fontWeight.bold,
+      lineHeight: 34,
+    },
+    iconBadgeSecondary: {
+      backgroundColor: colors.primaryLight,
+      paddingHorizontal: 12,
+    },
+    listGlyphLine: {
+      height: 3,
+      alignSelf: 'stretch',
+      backgroundColor: colors.primaryText,
+      borderRadius: 2,
+      marginVertical: 2,
+    },
+    listGlyphLineShort: {
+      width: '60%',
+      alignSelf: 'flex-start',
+    },
+    chevron: {
+      fontSize: fontSize.xxl,
+      fontWeight: fontWeight.medium,
+      color: colors.textMuted,
+      marginLeft: spacing.sm,
+    },
+    chevronOnPrimary: {
+      color: colors.onPrimaryMuted,
+    },
+    footerNote: {
+      marginTop: 'auto',
+      paddingTop: spacing.xxl,
+      textAlign: 'center',
+      fontSize: fontSize.xs,
+      color: colors.textMuted,
+    },
+  });

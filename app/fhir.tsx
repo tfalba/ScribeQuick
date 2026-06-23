@@ -6,7 +6,7 @@
  * a real EHR. Offers a "Copy FHIR JSON" action.
  */
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Platform,
   Pressable,
@@ -18,11 +18,20 @@ import {
 import * as Clipboard from 'expo-clipboard';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors, fontSize, fontWeight, radius, spacing } from '../constants/theme';
+import {
+  fontSize,
+  fontWeight,
+  radius,
+  spacing,
+  useThemeColors,
+  type ThemeColors,
+} from '../constants/theme';
 
 export default function FhirScreen() {
   const params = useLocalSearchParams<{ bundle?: string; patientLabel?: string }>();
   const insets = useSafeAreaInsets();
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -97,7 +106,8 @@ export default function FhirScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.background,
@@ -167,7 +177,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   secondaryButtonText: {
-    color: colors.primary,
+    color: colors.primaryText,
     fontSize: fontSize.md,
     fontWeight: fontWeight.semibold,
   },

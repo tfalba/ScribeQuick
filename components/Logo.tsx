@@ -7,8 +7,15 @@
  * "ScribeQuick" wordmark and an optional tagline beneath it.
  */
 
+import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize, fontWeight, radius, spacing } from '../constants/theme';
+import {
+  fontSize,
+  fontWeight,
+  spacing,
+  useThemeColors,
+  type ThemeColors,
+} from '../constants/theme';
 
 interface LogoProps {
   /** Pixel size of the square mark. */
@@ -24,12 +31,19 @@ export default function Logo({
   showWordmark = false,
   tagline,
 }: LogoProps) {
+  const colors = useThemeColors();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
   const markRadius = size * 0.26;
   const letterSize = size * 0.5;
   const pulseWidth = size * 0.46;
 
   return (
-    <View style={styles.container} accessibilityRole="image" accessibilityLabel="ScribeQuick logo">
+    <View
+      style={styles.container}
+      accessibilityRole="image"
+      accessibilityLabel="ScribeQuick logo"
+    >
       <View
         style={[
           styles.mark,
@@ -46,7 +60,7 @@ export default function Logo({
 
       {showWordmark && (
         <>
-          <Text style={styles.wordmark}>
+          <Text style={styles.wordmark} accessibilityRole="header">
             Scribe<Text style={styles.wordmarkAccent}>Quick</Text>
           </Text>
           {tagline ? <Text style={styles.tagline}>{tagline}</Text> : null}
@@ -56,63 +70,62 @@ export default function Logo({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-  },
-  mark: {
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    // subtle depth
-    shadowColor: colors.primaryDark,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  letter: {
-    color: colors.textInverse,
-    fontWeight: fontWeight.bold,
-    lineHeight: undefined,
-  },
-  pulse: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    marginTop: 2,
-  },
-  pulseBase: {
-    flex: 1,
-    height: 2,
-    backgroundColor: colors.accent,
-    marginBottom: 3,
-    borderRadius: 1,
-  },
-  pulseSpike: {
-    width: 10,
-    height: 9,
-    borderLeftWidth: 2,
-    borderRightWidth: 2,
-    borderTopWidth: 2,
-    borderColor: colors.accent,
-    marginHorizontal: 1,
-  },
-  wordmark: {
-    marginTop: spacing.lg,
-    fontSize: fontSize.xxl,
-    fontWeight: fontWeight.bold,
-    color: colors.text,
-    letterSpacing: 0.3,
-  },
-  wordmarkAccent: {
-    color: colors.primary,
-  },
-  tagline: {
-    marginTop: spacing.sm,
-    fontSize: fontSize.md,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-});
+const makeStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      alignItems: 'center',
+    },
+    mark: {
+      backgroundColor: colors.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+      shadowColor: colors.primaryDark,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+      elevation: 4,
+    },
+    letter: {
+      color: colors.textInverse,
+      fontWeight: fontWeight.bold,
+    },
+    pulse: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      justifyContent: 'center',
+      marginTop: 2,
+    },
+    pulseBase: {
+      flex: 1,
+      height: 2,
+      backgroundColor: colors.accent,
+      marginBottom: 3,
+      borderRadius: 1,
+    },
+    pulseSpike: {
+      width: 10,
+      height: 9,
+      borderLeftWidth: 2,
+      borderRightWidth: 2,
+      borderTopWidth: 2,
+      borderColor: colors.accent,
+      marginHorizontal: 1,
+    },
+    wordmark: {
+      marginTop: spacing.lg,
+      fontSize: fontSize.xxl,
+      fontWeight: fontWeight.bold,
+      color: colors.text,
+      letterSpacing: 0.3,
+    },
+    wordmarkAccent: {
+      color: colors.primaryText,
+    },
+    tagline: {
+      marginTop: spacing.sm,
+      fontSize: fontSize.md,
+      color: colors.textSecondary,
+      textAlign: 'center',
+      lineHeight: 22,
+    },
+  });
