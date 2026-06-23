@@ -27,6 +27,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SoapSection from '../components/SoapSection';
 import type { SoapNote } from '../services/openai';
+import { buildFhirBundle, serializeFhirBundle } from '../services/fhir';
 import { getNoteById, saveNote, updateNote } from '../services/storage';
 import { colors, fontSize, fontWeight, radius, spacing } from '../constants/theme';
 
@@ -76,6 +77,7 @@ export default function ResultsScreen() {
   const [soap, setSoap] = useState<SoapNote | null>(null);
   const [rawNotes, setRawNotes] = useState('');
   const [patientLabel, setPatientLabel] = useState('');
+  const [createdAt, setCreatedAt] = useState<number | undefined>(undefined);
   const [isSaved, setIsSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -103,6 +105,7 @@ export default function ResultsScreen() {
           setSoap(found.soap);
           setRawNotes(found.rawNotes);
           setPatientLabel(found.patientLabel);
+          setCreatedAt(found.createdAt);
           setIsSaved(true);
         } else {
           setLoadError('This note could not be found.');
@@ -224,6 +227,15 @@ export default function ResultsScreen() {
     setSoap(cleaned);
     setPatientLabel(label);
     setEditing(false);
+  }
+
+  function handleExportFhir() {
+    if (!soap) return;
+    const bundle = buildFhirBundle({ patientLabel, soap, createdAt });
+    router.push({
+      pathname: '/fhir',
+      params: { bundle: serializeFhirBundle(bundle), patientLabel },
+    });
   }
 
   async function handleCopy() {
@@ -470,6 +482,18 @@ export default function ResultsScreen() {
               <Text style={styles.primaryButtonText}>
                 {copied ? 'Copied!' : 'Copy Full Note'}
               </Text>
+            </Pressable>
+
+            <Pressable
+              style={({ pressed }) => [
+                styles.secondaryButton,
+                pressed && styles.buttonPressed,
+              ]}
+              onPress={handleExportFhir}
+              accessibilityRole="button"
+              accessibilityLabel="Export note as a simulated FHIR bundle"
+            >
+              <Text style={styles.secondaryButtonText}>Export FHIR</Text>
             </Pressable>
 
             {!isSaved && (

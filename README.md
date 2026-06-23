@@ -33,6 +33,9 @@ practical AI integration in a realistic clinical-documentation workflow.
   edited, and updated in place.
 - **Copy full note** to the clipboard as formatted plain text (with the billing
   disclaimer included).
+- **Simulated FHIR export** — generate a standards-shaped FHIR R4 bundle
+  (a Composition with LOINC-coded SOAP sections + one Condition per ICD-10 code)
+  and copy it. Demonstration only; never transmitted to a real EHR.
 - **Local history** — notes are saved on-device with AsyncStorage, searchable by
   patient label or assessment, with inline delete confirmation.
 - **Branded UI** — a code-rendered logo wired into the app icon and splash screen.
@@ -135,7 +138,7 @@ All API access is isolated in [`services/openai.ts`](services/openai.ts):
 ## Roadmap
 
 - [x] Voice input (Whisper transcription)
-- [ ] EHR export simulation (mock FHIR/HL7 from a saved note)
+- [x] EHR export simulation (mock FHIR R4 bundle)
 - [ ] Dark mode + accessibility pass (WCAG AA, screen-reader labels)
 
 ## License

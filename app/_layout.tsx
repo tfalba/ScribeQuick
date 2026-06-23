@@ -24,6 +24,7 @@ export default function RootLayout() {
         <Stack.Screen name="notes" options={{ title: 'Recent Notes' }} />
         <Stack.Screen name="new-note" options={{ title: 'New Visit Note' }} />
         <Stack.Screen name="results" options={{ title: 'SOAP Note' }} />
+        <Stack.Screen name="fhir" options={{ title: 'FHIR Export' }} />
       </Stack>
     </SafeAreaProvider>
   );
