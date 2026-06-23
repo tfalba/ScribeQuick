@@ -18,6 +18,11 @@ practical AI integration in a realistic clinical-documentation workflow.
 
 ## Screenshots
 
+<p align="center">
+  <img src="docs/screenshots/welcome.jpg" width="220" alt="Welcome screen" /><br/>
+  <sub><b>Welcome</b> — type or dictate a visit note, or browse history</sub>
+</p>
+
 <table>
   <tr>
     <td align="center" width="25%">
